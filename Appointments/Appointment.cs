@@ -17,12 +17,14 @@ namespace Appointments
 
         public DateTime StartTime { get; }
         public string Subject { get; }
+        public DateTime EndTime { get; }
 
-        public Appointment(DateTime startTime, Room room, string subject)
+        public Appointment(DateTime startTime, DateTime endTime, Room room, string subject)
         {
             Location = room;
             StartTime = startTime;
             Subject = subject;
+            EndTime = endTime;
         }
 
     }

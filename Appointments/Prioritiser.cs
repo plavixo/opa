@@ -30,14 +30,18 @@ namespace Appointments
 
         public IAppointment Flatten_PrioritiseTime(IAppointmentBuildable appointment)
         {
+            string subject = FlattenSubject(appointment);
             TimeBlock timeBlock = FlattenTimeBlock(appointment);
             var desiredRooms = FlattenDesiredRooms(appointment);
 
             Room room = GetBestRoomFor(timeBlock, desiredRooms);
-
-            string subject = FlattenSubject(appointment);
-
-            IAppointment flattenedAppointment = new Appointment(timeBlock.StartTime, room, subject);
+            
+            IAppointment flattenedAppointment = new Appointment(
+                timeBlock.StartTime, 
+                timeBlock.EndTime, 
+                room, 
+                subject
+               );
 
             return flattenedAppointment;
         }
