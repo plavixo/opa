@@ -18,20 +18,10 @@ namespace AppointmentGeneratorTests
 			mockAvailabilityAdaptor
 				.Setup(a => a.RoomIsAvailbleAtTime(It.IsAny<Room>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
 				.Returns(true);
-			
-
 			IRoomAvailabilityAdaptor roomAvailabilityAdaptor = mockAvailabilityAdaptor.Object;
 
-			DateTime start = new DateTime(2020, 1, 1);
-			DateTime end = new DateTime(2020, 1, 9);
-
-			IList<Room> locations = new List<Room>() { Room.Alpha, Room.Bravo };
-			IAppointmentAspect appointmentWithSubject = new AppointmentWithSubject($"another appointment",null);
-			IAppointmentAspect appointmentWithLocations = new AppointmentWithLocations(locations,appointmentWithSubject);
-			IAppointmentAspect testAppointment = new AppointmentWithTimes(start, end, appointmentWithLocations);
-
-			//act
-			var flattenedAppointment = new AppointmentAspectResolver(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
+			//Act
+			IAppointment flattenedAppointment = SetUpAndRun(roomAvailabilityAdaptor);
 
 			//assert
 			flattenedAppointment.Location.Should().Be(Room.Alpha);
@@ -50,21 +40,8 @@ namespace AppointmentGeneratorTests
 
 			IRoomAvailabilityAdaptor roomAvailabilityAdaptor = mockAvailabilityAdaptor.Object;
 
-			DateTime start	= new DateTime(2020, 1, 1);
-			DateTime end	= new DateTime(2020, 1, 1);
-			IEnumerable<Room> desirableLocations = new List<Room>() { Room.Alpha, Room.Bravo };
-			IRecurringAppointment recurringAppointment = new RecurringAppointment(
-				"an appointment",
-				desirableLocations,
-				1,
-				new TimeBlock(start, end)
-			);
-			IAppointmentAspect testAppointment = new RecurringAppointmentExploder(recurringAppointment)
-				.GetAppointmentsThatFallWithin(start, end)
-				.Single();
-
-			//act
-			var flattenedAppointment = new AppointmentAspectResolver(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
+			//Act
+			IAppointment flattenedAppointment = SetUpAndRun(roomAvailabilityAdaptor);
 
 			//assert
 			flattenedAppointment.Location.Should().Be(Room.Bravo);
@@ -80,23 +57,32 @@ namespace AppointmentGeneratorTests
 				.Returns(false);
 			mockAvailabilityAdaptor
 				.Setup(a => a.RoomIsAvailbleAtTime(Room.Bravo, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-				.Returns(false) ;
+				.Returns(false);
 			mockAvailabilityAdaptor
 				.Setup(a => a.RoomIsAvailbleAtTime(Room.Charlie, It.IsAny<DateTime>(), It.IsAny<DateTime>()))
 				.Returns(true);
 
 			IRoomAvailabilityAdaptor roomAvailabilityAdaptor = mockAvailabilityAdaptor.Object;
+			
+			//Act
+			IAppointment flattenedAppointment = SetUpAndRun(roomAvailabilityAdaptor);
 
+			//assert
+			flattenedAppointment.Location.Should().Be(Room.Charlie);
+		}
+
+		private static IAppointment SetUpAndRun(IRoomAvailabilityAdaptor roomAvailabilityAdaptor)
+		{
 			DateTime start = new DateTime(2020, 1, 1);
 			DateTime end = new DateTime(2020, 1, 1);
-			IList<Room> desirableLocations = new List<Room>() { Room.Alpha, Room.Bravo, Room.Charlie};
+			IList<Room> desirableLocations = new List<Room>() { Room.Alpha, Room.Bravo, Room.Charlie };
 
 
 			IRecurringAppointment recurringAppointment = new RecurringAppointment(
 				subject: "An appointment",
 				desirableLocations,
 				1,
-				new TimeBlock(start,end)
+				new TimeBlock(start, end)
 			);
 
 			IAppointmentAspect testAppointment = new RecurringAppointmentExploder(recurringAppointment)
@@ -105,9 +91,7 @@ namespace AppointmentGeneratorTests
 
 			//act
 			var flattenedAppointment = new AppointmentAspectResolver(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
-
-			//assert
-			flattenedAppointment.Location.Should().Be(Room.Charlie);
+			return flattenedAppointment;
 		}
 	}	
 }
