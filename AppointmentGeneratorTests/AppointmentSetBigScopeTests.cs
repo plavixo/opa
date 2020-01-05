@@ -43,8 +43,8 @@ namespace AppointmentGeneratorTests
         public IAppointment Demo { get; }
         public IAppointment MIP { get; internal set; }
         public IAppointment Planning { get; internal set; }
-        public DateTime StartDate { get; }
-        public DateTime EndDate { get; }
+        public DateTime StartDate { get; } = new DateTime(2020, 1, 13);
+        public DateTime EndDate { get; } = new DateTime(2020, 1, 19);
 
         public AppointmentSetBigScopeTestsFixture()
         {
@@ -54,8 +54,7 @@ namespace AppointmentGeneratorTests
             IList<IAppointmentBuildable> potentialAppointments = new List<IAppointmentBuildable>() {
                 demoToProcess, mipToProcess, planningToProcess
             };
-            
-            
+                       
             IRoomAvailabilityAdaptor roomAvailabilityAdaptor = null;
             
             IEnumerable<IAppointment> appointments = new Prioritiser(roomAvailabilityAdaptor).FlattenSet(potentialAppointments);
