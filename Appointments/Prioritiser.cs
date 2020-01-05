@@ -17,9 +17,15 @@ namespace Appointments
             Room room = GetRoomFor_WithRespectToTimes(appointment);
             DateTime startTime = GetStartTime(appointment);
 
-            IAppointment flattenedAppointment = new Appointment(startTime, room);
+            string subject = GetSubject(appointment);
+            IAppointment flattenedAppointment = new Appointment(startTime, room, subject);
 
             return flattenedAppointment;
+        }
+
+        private string GetSubject(IAppointmentBuildable appointment)
+        {
+            return "an appointment";
         }
 
         public object Flatten(object testAppointment)
@@ -63,6 +69,11 @@ namespace Appointments
             }
 
             return room;
+        }
+
+        public IEnumerable<IAppointment> FlattenSet(IList<IAppointmentBuildable> potentialAppointments)
+        {
+            throw new NotImplementedException();
         }
 
         private bool RoomAvailable(Room desiredRoom, DateTime startTime, DateTime endTime)

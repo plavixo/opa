@@ -8,6 +8,7 @@ namespace Appointments
     {
         Room Location { get; }
         DateTime StartTime { get; }
+        string Subject { get; }
     }
 
     public class Appointment : IAppointment
@@ -15,11 +16,13 @@ namespace Appointments
         public Room Location { get; }
 
         public DateTime StartTime { get; }
+        public string Subject { get; }
 
-        public Appointment(DateTime startTime, Room room)
+        public Appointment(DateTime startTime, Room room, string subject)
         {
             Location = room;
             StartTime = startTime;
+            Subject = subject;
         }
 
     }

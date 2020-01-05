@@ -49,9 +49,12 @@ namespace AppointmentGeneratorTests
 
 			IRoomAvailabilityAdaptor roomAvailabilityAdaptor = mockAvailabilityAdaptor.Object;
 
-			DateTime start = new DateTime(2020,1,1);
-			DateTime end = new DateTime(2020, 1, 9);
-			IAppointmentBuildable testAppointment = new RetroGenerator().GetAppointments(start, end).Single();
+			DateTime start	= new DateTime(2020, 1, 1);
+			DateTime end	= new DateTime(2020, 1, 1);
+			IList<Room> desirableLocation = new List<Room>() { Room.Alpha, Room.Bravo };
+			IAppointmentBuildable testAppointment = new AppointmentGenerator(desirableLocation, 1, start)
+				.GetAppointmentsThatFallWithin(start, end)
+				.Single();
 
 			//act
 			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten(testAppointment);
