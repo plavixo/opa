@@ -4,9 +4,10 @@ namespace Appointments
 {
     public interface IAppointment
     {
+        string Subject { get; }
         Room Location { get; }
         DateTime StartTime { get; }
-        string Subject { get; }
+        public DateTime EndTime { get; }
     }
 
     public class Appointment : IAppointment

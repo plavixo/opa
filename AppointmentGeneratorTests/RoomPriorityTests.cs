@@ -26,12 +26,12 @@ namespace AppointmentGeneratorTests
 			DateTime end = new DateTime(2020, 1, 9);
 
 			IList<Room> locations = new List<Room>() { Room.Alpha, Room.Bravo };
-			IAppointmentBuildable appointmentWithSubject = new AppointmentWithSubject($"another appointment",null);
-			IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(locations,appointmentWithSubject);
-			IAppointmentBuildable testAppointment = new AppointmentWithTimes(start, end, appointmentWithLocations);
+			IAppointmentAspect appointmentWithSubject = new AppointmentWithSubject($"another appointment",null);
+			IAppointmentAspect appointmentWithLocations = new AppointmentWithLocations(locations,appointmentWithSubject);
+			IAppointmentAspect testAppointment = new AppointmentWithTimes(start, end, appointmentWithLocations);
 
 			//act
-			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
+			var flattenedAppointment = new AppointmentAspectResolver(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
 
 			//assert
 			flattenedAppointment.Location.Should().Be(Room.Alpha);
@@ -59,12 +59,12 @@ namespace AppointmentGeneratorTests
 				1,
 				new TimeBlock(start, end)
 			);
-			IAppointmentBuildable testAppointment = new AppointmentGenerator(recurringAppointment)
+			IAppointmentAspect testAppointment = new RecurringAppointmentExploder(recurringAppointment)
 				.GetAppointmentsThatFallWithin(start, end)
 				.Single();
 
 			//act
-			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
+			var flattenedAppointment = new AppointmentAspectResolver(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
 
 			//assert
 			flattenedAppointment.Location.Should().Be(Room.Bravo);
@@ -99,12 +99,12 @@ namespace AppointmentGeneratorTests
 				new TimeBlock(start,end)
 			);
 
-			IAppointmentBuildable testAppointment = new AppointmentGenerator(recurringAppointment)
+			IAppointmentAspect testAppointment = new RecurringAppointmentExploder(recurringAppointment)
 				.GetAppointmentsThatFallWithin(start, end)
 				.Single();
 
 			//act
-			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
+			var flattenedAppointment = new AppointmentAspectResolver(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
 
 			//assert
 			flattenedAppointment.Location.Should().Be(Room.Charlie);

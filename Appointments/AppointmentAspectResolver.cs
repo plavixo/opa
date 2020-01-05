@@ -5,14 +5,14 @@ using Useful.Extensions;
 
 namespace Appointments
 {
-    public class Prioritiser
+    public class AppointmentAspectResolver
     {
         private readonly IRoomAvailabilityAdaptor _adaptor;
 
-        public Prioritiser(IRoomAvailabilityAdaptor roomAvailabilityAdaptor) {
+        public AppointmentAspectResolver(IRoomAvailabilityAdaptor roomAvailabilityAdaptor) {
             _adaptor = roomAvailabilityAdaptor;
         }
-        public IEnumerable<IAppointment> FlattenSet_SameRoom_PrioritiseTime(IList<IAppointmentBuildable> potentialAppointments, IEnumerable<Room> desiredRooms)
+        public IEnumerable<IAppointment> FlattenSet_SameRoom_PrioritiseTime(IList<IAppointmentAspect> potentialAppointments, IEnumerable<Room> desiredRooms)
         {
             IEnumerable<TimeBlock> timeBlocks = potentialAppointments.Select(t => FlattenTimeBlock(t));
 
@@ -21,14 +21,14 @@ namespace Appointments
             IList<IAppointment> appointments = new List<IAppointment>();
             foreach (var desiredAppointment in potentialAppointments) {
 
-                IAppointmentBuildable wrappedAppointment = new AppointmentWithLocations(bestAvailableRoom, desiredAppointment);
+                IAppointmentAspect wrappedAppointment = new AppointmentWithLocations(bestAvailableRoom, desiredAppointment);
                 appointments.Add(Flatten_PrioritiseTime(wrappedAppointment));
             }
 
             return appointments;
         }
 
-        public IAppointment Flatten_PrioritiseTime(IAppointmentBuildable appointment)
+        public IAppointment Flatten_PrioritiseTime(IAppointmentAspect appointment)
         {
             string subject = FlattenSubject(appointment);
             TimeBlock timeBlock = FlattenTimeBlock(appointment);
@@ -96,7 +96,7 @@ namespace Appointments
 
         #region BasicFlattening
 
-        private string FlattenSubject(IAppointmentBuildable appointment)
+        private string FlattenSubject(IAppointmentAspect appointment)
         {
             string subject = appointment.Subject;
 
@@ -111,7 +111,7 @@ namespace Appointments
             return subject;
         }
 
-        private TimeBlock FlattenTimeBlock(IAppointmentBuildable appointment)
+        private TimeBlock FlattenTimeBlock(IAppointmentAspect appointment)
         {
             TimeBlock timeBlock = appointment.TimeBlock;
 
@@ -126,7 +126,7 @@ namespace Appointments
             return timeBlock;
         }
 
-        private IEnumerable<Room> FlattenDesiredRooms(IAppointmentBuildable appointment)
+        private IEnumerable<Room> FlattenDesiredRooms(IAppointmentAspect appointment)
         {
             IEnumerable<Room> desiredRooms = appointment.Locations;
 

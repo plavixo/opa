@@ -4,7 +4,12 @@ using System.Linq;
 
 namespace Appointments
 {
-    public class AppointmentGenerator :IAppointmentGenerator
+    public interface IRecurringAppointmentExploder
+    {
+        IList<IAppointmentAspect> GetAppointmentsThatFallWithin(DateTime startRange, DateTime endDate);
+    }
+
+    public class RecurringAppointmentExploder :IRecurringAppointmentExploder
     {
 
         private IEnumerable<TimeBlock> _potentialTimeBlocks;
@@ -14,7 +19,7 @@ namespace Appointments
         private string _subject;
 
 
-        public AppointmentGenerator(IRecurringAppointment recurringAppointment)
+        public RecurringAppointmentExploder(IRecurringAppointment recurringAppointment)
         {
             _desirableLocations = recurringAppointment.DesirableLocations;
             _interval = recurringAppointment.Interval;
@@ -40,9 +45,9 @@ namespace Appointments
             return potentialTimeBlocks;
         }
 
-        public IList<IAppointmentBuildable> GetAppointmentsThatFallWithin(DateTime startOfRange, DateTime EndOfRange ) {
+        public IList<IAppointmentAspect> GetAppointmentsThatFallWithin(DateTime startOfRange, DateTime EndOfRange ) {
 
-            IList<IAppointmentBuildable> appointments = new List<IAppointmentBuildable>();
+            IList<IAppointmentAspect> appointments = new List<IAppointmentAspect>();
 
             
             IEnumerable<TimeBlock> validForStart = _potentialTimeBlocks.Where(appointmentBlock => appointmentBlock.StartTime > startOfRange);
@@ -52,8 +57,8 @@ namespace Appointments
 
             foreach (var block in timeBlocks)
             {
-                IAppointmentBuildable appointmentWithSubject = new AppointmentWithSubject(_subject, null);
-                IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(_desirableLocations, appointmentWithSubject);
+                IAppointmentAspect appointmentWithSubject = new AppointmentWithSubject(_subject, null);
+                IAppointmentAspect appointmentWithLocations = new AppointmentWithLocations(_desirableLocations, appointmentWithSubject);
 
                 var timeBlock = new TimeBlock(block.StartTime, block.EndTime);
                 appointments.Add(

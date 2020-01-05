@@ -50,11 +50,11 @@ namespace AppointmentGeneratorTests
         {
 
             //Arrange
-            var demoToProcess = new AppointmentGenerator(new Demo()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
-            var mipToProcess = new AppointmentGenerator(new MIP()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
-            var planningToProcess = new AppointmentGenerator(new Planning()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
+            var demoToProcess = new RecurringAppointmentExploder(new Demo()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
+            var mipToProcess = new RecurringAppointmentExploder(new MIP()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
+            var planningToProcess = new RecurringAppointmentExploder(new Planning()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
 
-            IList<IAppointmentBuildable> setOfAppointments = new List<IAppointmentBuildable>() {
+            IList<IAppointmentAspect> setOfAppointments = new List<IAppointmentAspect>() {
                 demoToProcess, mipToProcess, planningToProcess
             };
             
@@ -64,7 +64,7 @@ namespace AppointmentGeneratorTests
 
 
             // Act
-            IEnumerable<IAppointment> appointments = new Prioritiser(roomAvailabilityAdaptor).FlattenSet_SameRoom_PrioritiseTime(setOfAppointments, desiredRoomsForSet);
+            IEnumerable<IAppointment> appointments = new AppointmentAspectResolver(roomAvailabilityAdaptor).FlattenSet_SameRoom_PrioritiseTime(setOfAppointments, desiredRoomsForSet);
 
             //Unpack for tests
             Demo = appointments.Where(a => a.Subject.Equals(TestTypes.DemoTitle)).Single();
@@ -72,7 +72,7 @@ namespace AppointmentGeneratorTests
             Planning = appointments.Where(a => a.Subject.Equals(TestTypes.PlanningTitle)).Single();
         }
 
-        private static IRoomAvailabilityAdaptor GetAvailablilityAdaptorThatWillShowRoomBusyAtAppointmentTime(IAppointmentBuildable appointment)
+        private static IRoomAvailabilityAdaptor GetAvailablilityAdaptorThatWillShowRoomBusyAtAppointmentTime(IAppointmentAspect appointment)
         {
             Mock<IRoomAvailabilityAdaptor> mockRoomAvailabilityAdaptor = new Mock<IRoomAvailabilityAdaptor>();
             mockRoomAvailabilityAdaptor
