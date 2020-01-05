@@ -5,5 +5,6 @@
         NotSet,
         Alpha,
         Bravo,
+        Charlie,
     }
 }
