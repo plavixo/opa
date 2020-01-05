@@ -4,7 +4,6 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 
 namespace AppointmentGeneratorTests
@@ -52,6 +51,7 @@ namespace AppointmentGeneratorTests
             var demoToProcess = new DemoGenerator().GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
             var mipToProcess = new MIPGenerator().GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
             var planningToProcess = new PlanningGenerator().GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
+            
             IList<IAppointmentBuildable> potentialAppointments = new List<IAppointmentBuildable>() {
                 demoToProcess, mipToProcess, planningToProcess
             };

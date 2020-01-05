@@ -33,7 +33,7 @@ namespace Appointments
             TimeBlock timeBlock = FlattenTimeBlock(appointment);
 
             foreach (var desiredRoom in desiredRooms) {             
-                if (RoomAvailable(desiredRoom, timeBlock.StartTime, timeBlock.EndTime))
+                if (RoomAvailable(desiredRoom, timeBlock))
                 {
                     room = desiredRoom;
                     break;
@@ -73,10 +73,8 @@ namespace Appointments
             foreach (var appointment in appointments)
             {
                 var timeBlock = FlattenTimeBlock(appointment);
-                var startTime = timeBlock.StartTime;
-                var endTime = timeBlock.EndTime;
 
-                if (RoomAvailable(room, startTime, endTime))
+                if (RoomAvailable(room, timeBlock))
                 {
                     continue;
                 }
@@ -92,9 +90,9 @@ namespace Appointments
 
 
 
-        private bool RoomAvailable(Room desiredRoom, DateTime startTime, DateTime endTime)
+        private bool RoomAvailable(Room desiredRoom, TimeBlock timeBlock)
         {
-            return _adaptor.RoomIsAvailbleAtTime(desiredRoom, startTime, endTime);
+            return _adaptor.RoomIsAvailbleAtTime(desiredRoom, timeBlock.StartTime, timeBlock.EndTime);
         }
 
 
