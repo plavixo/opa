@@ -32,18 +32,21 @@ namespace AppointmentGeneratorTests
 
     public class FlattenerTestsFixture
     {
-        public IAppointment Appointment { get; internal set; }
-        public DateTime StartTime { get; internal set; }
+        public IAppointment Appointment { get; }
+        public DateTime StartTime { get;}
+        public DateTime EndTime { get; }
         public Room Location { get; }
 
         public FlattenerTestsFixture() {
 
-            StartTime = new DateTime(2020, 1, 2);
+            StartTime = new DateTime(2020, 1, 2, 13, 00, 00);
+            EndTime = new DateTime(2020, 1, 2, 15, 00, 00);
             Location = Room.Alpha;
+            IRoomAvailabilityAdaptor roomAvailabilityAdaptor = new TestRoomAvailabilityAdaptor();
 
-            IAppointmentBuildable appointmentWithTime = new AppointmentWithTimes(StartTime, null);
+            IAppointmentBuildable appointmentWithTime = new AppointmentWithTimes(StartTime, EndTime, null);
             IAppointmentBuildable appointmentWithLocation = new AppointmentWithLocation(Location, appointmentWithTime);
-            Appointment = Prioritiser.Flatten(appointmentWithLocation);
+            Appointment = new Prioritiser(roomAvailabilityAdaptor).Flatten(appointmentWithLocation);
 
         }
     }

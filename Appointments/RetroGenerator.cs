@@ -30,20 +30,20 @@ namespace Appointments
             return potentailDates;
         }
 
-        public IList<AppointmentWithTimes> GetAppointments(DateTime startDate, DateTime endDate ) {
+        public IList<IAppointmentBuildable> GetAppointments(DateTime startRange, DateTime endDate ) {
 
-            IList<AppointmentWithTimes> appointments = new List<AppointmentWithTimes>();
+            IList<IAppointmentBuildable> retros = new List<IAppointmentBuildable>();
 
             
-            var dates = _potentialDates.Where(date => date > startDate && date < endDate);
+            IEnumerable<DateTime> times = _potentialDates.Where(date => date > startRange && date < endDate);
 
-            foreach (var date in dates) {
-                appointments.Add(
-                    new AppointmentWithTimes(date, null)    
+            foreach (var startTime in times) {
+                retros.Add(
+                    new AppointmentWithTimes(startTime,DateTime.MinValue, null)    
                 );
             }
 
-            return appointments;
+            return retros;
         }
 
     }

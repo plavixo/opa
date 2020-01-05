@@ -6,7 +6,13 @@ namespace Appointments
 {
     public class Prioritiser
     {
-        public static IAppointment Flatten(IAppointmentBuildable appointment)
+        private readonly IRoomAvailabilityAdaptor _adaptor;
+
+        public Prioritiser(IRoomAvailabilityAdaptor roomAvailabilityAdaptor) {
+            _adaptor = roomAvailabilityAdaptor;
+        }
+
+        public IAppointment Flatten(IAppointmentBuildable appointment)
         {
             Room room = GetRoomFrom(appointment);
             DateTime startTime = GetStartTime(appointment);
@@ -16,7 +22,7 @@ namespace Appointments
             return flattenedAppointment;
         }
 
-        private static DateTime GetStartTime(IAppointmentBuildable appointment)
+        private DateTime GetStartTime(IAppointmentBuildable appointment)
         {
             DateTime startTime = default;
 
@@ -31,7 +37,7 @@ namespace Appointments
             return startTime;
         }
 
-        private static Room GetRoomFrom(IAppointmentBuildable appointment)
+        private Room GetRoomFrom(IAppointmentBuildable appointment)
         {
             Room room = Room.NotSet;
 
@@ -43,7 +49,7 @@ namespace Appointments
                 desiredRoom = appointment.Location;            
             }
 
-            if (RoomAvailable(desiredRoom))
+            if (RoomAvailable(desiredRoom, appointment.StartTime, appointment.EndTime))
             {
                 room = desiredRoom;
             }
@@ -51,9 +57,9 @@ namespace Appointments
             return room;
         }
 
-        private static bool RoomAvailable(Room desiredRoom)
+        private bool RoomAvailable(Room desiredRoom, DateTime startTime, DateTime endTime)
         {
-            return true;
+            return _adaptor.RoomIsAvailbleAtTime(desiredRoom, startTime, endTime);
         }
     }
 }
