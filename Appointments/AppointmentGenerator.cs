@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Useful.Extensions;
 
 namespace Appointments
 {
@@ -9,7 +8,6 @@ namespace Appointments
     {
 
         private IEnumerable<TimeBlock> _potentialTimeBlocks;
-
         private IEnumerable<Room> _desirableLocations;
         private int _interval;
         private TimeBlock _rootTimeBlock;
@@ -22,8 +20,6 @@ namespace Appointments
             _interval = recurringAppointment.Interval;
             _rootTimeBlock = recurringAppointment.RootTimeBlock;
             _subject = recurringAppointment.Subject;
-
-
             _potentialTimeBlocks = GeneratePotentialTimeBlocks();
 
         }
@@ -66,9 +62,6 @@ namespace Appointments
             }
 
             return appointments;
-
-
-
         }
 
     }

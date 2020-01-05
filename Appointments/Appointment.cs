@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Appointments
 {
@@ -13,10 +11,9 @@ namespace Appointments
 
     public class Appointment : IAppointment
     {
-        public Room Location { get; }
-
-        public DateTime StartTime { get; }
         public string Subject { get; }
+        public Room Location { get; }
+        public DateTime StartTime { get; }
         public DateTime EndTime { get; }
 
         public Appointment(DateTime startTime, DateTime endTime, Room room, string subject)
@@ -42,8 +39,8 @@ namespace Appointments
 
         public TimeBlock(TimeBlock rootTimeBlock)
         {
-            this.StartTime = rootTimeBlock.StartTime;
-            this.EndTime = rootTimeBlock.EndTime;
+            StartTime = rootTimeBlock.StartTime;
+            EndTime = rootTimeBlock.EndTime;
         }
 
         internal TimeBlock AddDays(int interval)
