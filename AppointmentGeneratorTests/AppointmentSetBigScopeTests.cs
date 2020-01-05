@@ -23,19 +23,19 @@ namespace AppointmentGeneratorTests
 
         [Fact]
         public void DemoShouldBeInRoomBravo() {
-            _demo.Location.Should().Be(Room.Bravo);
+            _demo.Location.Should().Be(Room.Echo);
         }
 
         [Fact]
         public void MIPShouldBeInRoomBravo()
         {
-            _mip.Location.Should().Be(Room.Bravo);
+            _mip.Location.Should().Be(Room.Echo);
         }
 
         [Fact]
         public void PlanningShouldBeInRoomBravo()
         {
-            _planning.Location.Should().Be(Room.Bravo);
+            _planning.Location.Should().Be(Room.Echo);
         }
     }
 
@@ -63,23 +63,16 @@ namespace AppointmentGeneratorTests
 
             bool thing(Room room, DateTime start, DateTime end)
             {
-                if(room.Equals(Room.Alpha) && start.Equals(mipToProcess.TimeBlock.StartTime) && end.Equals(mipToProcess.TimeBlock.EndTime)){
+                if(room.Equals(Room.Delta) && start.Equals(mipToProcess.TimeBlock.StartTime) && end.Equals(mipToProcess.TimeBlock.EndTime)){
                     return false;
                 }else {
                     return true;
                 }
             }
 
-            //mockRoomAvailabilityAdaptor
-            //    .Setup(a => a.RoomIsAvailbleAtTime(Room.Alpha, mipToProcess.StartTime, mipToProcess.EndTime))
-            //    .Returns(false);
-            //mockRoomAvailabilityAdaptor.SetReturnsDefault<bool>(true);
-
-
-
             IRoomAvailabilityAdaptor roomAvailabilityAdaptor = mockRoomAvailabilityAdaptor.Object;
 
-            IList<Room> desiredRooms = new List<Room> { Room.Alpha, Room.Bravo};
+            IList<Room> desiredRooms = new List<Room> { Room.Delta, Room.Echo};
             IEnumerable<IAppointment> appointments = new Prioritiser(roomAvailabilityAdaptor).FlattenSet_FixedTimes_SameRoom(potentialAppointments, desiredRooms);
 
             Demo = appointments.Where(a => a.Subject.Equals(TestTypes.DemoTitle)).Single();
