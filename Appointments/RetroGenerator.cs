@@ -39,7 +39,7 @@ namespace Appointments
 
             foreach (var startTime in times) {
                 retros.Add(
-                    new AppointmentWithTimes(startTime,DateTime.MinValue, null)    
+                    new AppointmentWithTimes(startTime, startTime.AddHours(1), null)    
                 );
             }
 

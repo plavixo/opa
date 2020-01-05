@@ -45,7 +45,7 @@ namespace AppointmentGeneratorTests
             IRoomAvailabilityAdaptor roomAvailabilityAdaptor = new TestRoomAvailabilityAdaptor();
 
             IAppointmentBuildable appointmentWithTime = new AppointmentWithTimes(StartTime, EndTime, null);
-            IAppointmentBuildable appointmentWithLocation = new AppointmentWithLocation(Location, appointmentWithTime);
+            IAppointmentBuildable appointmentWithLocation = new AppointmentWithLocations(Location, appointmentWithTime);
             Appointment = new Prioritiser(roomAvailabilityAdaptor).Flatten(appointmentWithLocation);
 
         }

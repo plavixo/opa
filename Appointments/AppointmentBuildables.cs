@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Appointments
 {
     public interface IAppointmentBuildable
     {
         IAppointmentBuildable InnerAppointment { get; }
-        Room Location { get; }
+        IEnumerable<Room> Locations { get; }
         DateTime StartTime { get; }
         DateTime EndTime { get; }
     }
@@ -15,8 +16,7 @@ namespace Appointments
         public IAppointmentBuildable InnerAppointment { get; }
         public DateTime StartTime { get; }
         public DateTime EndTime { get; }
-
-        public Room Location { get; } = Room.NotSet;
+        public IEnumerable<Room> Locations { get; }
 
 
         public AppointmentWithTimes(DateTime startTime, DateTime endTime, IAppointmentBuildable innerAppointment)
@@ -29,18 +29,18 @@ namespace Appointments
      }
 
 
-    public class AppointmentWithLocation : IAppointmentBuildable
+    public class AppointmentWithLocations : IAppointmentBuildable
     {
         public IAppointmentBuildable InnerAppointment { get; }
-        public Room Location { get; }
+        public IEnumerable<Room> Locations { get; }
 
         public DateTime StartTime { get; } = DateTime.MinValue;
 
         public DateTime EndTime { get; } = DateTime.MinValue;
 
-        public AppointmentWithLocation(Room room, IAppointmentBuildable innerAppointment)
+        public AppointmentWithLocations(Room room, IAppointmentBuildable innerAppointment)
         {
-            Location = room;
+            Locations = new List<Room> { room };
             InnerAppointment = innerAppointment;
         }
     }

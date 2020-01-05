@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using Useful.Extensions;
 
 namespace Appointments
 {
@@ -14,7 +14,7 @@ namespace Appointments
 
         public IAppointment Flatten(IAppointmentBuildable appointment)
         {
-            Room room = GetRoomFrom(appointment);
+            Room room = GetRoomFor_WithRespectToTimes(appointment);
             DateTime startTime = GetStartTime(appointment);
 
             IAppointment flattenedAppointment = new Appointment(startTime, room);
@@ -37,21 +37,24 @@ namespace Appointments
             return startTime;
         }
 
-        private Room GetRoomFrom(IAppointmentBuildable appointment)
+        private Room GetRoomFor_WithRespectToTimes(IAppointmentBuildable appointment)
         {
             Room room = Room.NotSet;
 
-            Room desiredRoom = appointment.Location;
+            IEnumerable<Room> desiredRooms = appointment.Locations;
 
-            while (desiredRoom.Equals(Room.NotSet) && appointment.InnerAppointment!=null) {
+            while (desiredRooms.IsNullOrEmpty() && appointment.InnerAppointment!=null) {
 
                 appointment = appointment.InnerAppointment;
-                desiredRoom = appointment.Location;            
+                desiredRooms = appointment.Locations;            
             }
 
-            if (RoomAvailable(desiredRoom, appointment.StartTime, appointment.EndTime))
-            {
-                room = desiredRoom;
+            foreach (var desiredRoom in desiredRooms) {             
+                if (RoomAvailable(desiredRoom, appointment.StartTime, appointment.EndTime))
+                {
+                    room = desiredRoom;
+                    break;
+                }
             }
 
             return room;
