@@ -12,7 +12,7 @@ namespace Appointments
         public Prioritiser(IRoomAvailabilityAdaptor roomAvailabilityAdaptor) {
             _adaptor = roomAvailabilityAdaptor;
         }
-        public IEnumerable<IAppointment> FlattenSet_FixedTimes_SameRoom(IList<IAppointmentBuildable> potentialAppointments, IEnumerable<Room> desiredRooms)
+        public IEnumerable<IAppointment> FlattenSet_SameRoom_PrioritiseTime(IList<IAppointmentBuildable> potentialAppointments, IEnumerable<Room> desiredRooms)
         {
             IEnumerable<TimeBlock> timeBlocks = potentialAppointments.Select(t => FlattenTimeBlock(t));
 

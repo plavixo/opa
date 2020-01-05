@@ -73,7 +73,7 @@ namespace AppointmentGeneratorTests
             IRoomAvailabilityAdaptor roomAvailabilityAdaptor = mockRoomAvailabilityAdaptor.Object;
 
             IList<Room> desiredRooms = new List<Room> { Room.Delta, Room.Echo};
-            IEnumerable<IAppointment> appointments = new Prioritiser(roomAvailabilityAdaptor).FlattenSet_FixedTimes_SameRoom(potentialAppointments, desiredRooms);
+            IEnumerable<IAppointment> appointments = new Prioritiser(roomAvailabilityAdaptor).FlattenSet_SameRoom_PrioritiseTime(potentialAppointments, desiredRooms);
 
             Demo = appointments.Where(a => a.Subject.Equals(TestTypes.DemoTitle)).Single();
             MIP = appointments.Where(a => a.Subject.Equals(TestTypes.MIPTitle)).Single();
