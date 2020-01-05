@@ -31,7 +31,7 @@ namespace AppointmentGeneratorTests
 			IAppointmentBuildable testAppointment = new AppointmentWithTimes(start, end, appointmentWithLocations);
 
 			//act
-			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten(testAppointment);
+			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
 
 			//assert
 			flattenedAppointment.Location.Should().Be(Room.Alpha);
@@ -64,7 +64,7 @@ namespace AppointmentGeneratorTests
 				.Single();
 
 			//act
-			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten(testAppointment);
+			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
 
 			//assert
 			flattenedAppointment.Location.Should().Be(Room.Bravo);
@@ -104,7 +104,7 @@ namespace AppointmentGeneratorTests
 				.Single();
 
 			//act
-			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten(testAppointment);
+			var flattenedAppointment = new Prioritiser(roomAvailabilityAdaptor).Flatten_PrioritiseTime(testAppointment);
 
 			//assert
 			flattenedAppointment.Location.Should().Be(Room.Charlie);

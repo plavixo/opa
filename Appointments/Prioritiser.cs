@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Useful.Extensions;
 
 namespace Appointments
@@ -12,10 +13,13 @@ namespace Appointments
             _adaptor = roomAvailabilityAdaptor;
         }
 
-        public IAppointment Flatten(IAppointmentBuildable appointment)
+        public IAppointment Flatten_PrioritiseTime(IAppointmentBuildable appointment)
         {
-            Room room = GetRoomFor_WithRespectToTimes(appointment);
             TimeBlock timeBlock = FlattenTimeBlock(appointment);
+            var desiredRooms = FlattenDesiredRooms(appointment);
+       
+            Room room = GetBestRoomFor(timeBlock, desiredRooms);
+           
             string subject = FlattenSubject(appointment);
 
             IAppointment flattenedAppointment = new Appointment(timeBlock.StartTime, room, subject);
@@ -23,16 +27,12 @@ namespace Appointments
             return flattenedAppointment;
         }
 
-              
-        private Room GetRoomFor_WithRespectToTimes(IAppointmentBuildable appointment)
+        private Room GetBestRoomFor(TimeBlock timeBlock, IEnumerable<Room> desiredRooms)
         {
             Room room = Room.NotSet;
-            
-            IEnumerable<Room> desiredRooms = FlattenDesiredRooms(appointment);
 
-            TimeBlock timeBlock = FlattenTimeBlock(appointment);
-
-            foreach (var desiredRoom in desiredRooms) {             
+            foreach (var desiredRoom in desiredRooms)
+            {
                 if (RoomAvailable(desiredRoom, timeBlock))
                 {
                     room = desiredRoom;
@@ -42,37 +42,36 @@ namespace Appointments
 
             return room;
         }
-
        
 
         public IEnumerable<IAppointment> FlattenSet_FixedTimes_SameRoom(IList<IAppointmentBuildable> potentialAppointments, IEnumerable<Room> desiredRooms)
         {
-            IList<IAppointment> appointments = new List<IAppointment>();
+            IEnumerable<TimeBlock> timeBlocks = potentialAppointments.Select(t => FlattenTimeBlock(t));
 
             Room bestAvailableRoom = Room.NotSet;
             foreach (var room in desiredRooms) {
-                if (RoomAvailableForAll(potentialAppointments, room)) {
+                if (RoomAvailableForAll(timeBlocks, room)) {
                     bestAvailableRoom = room;
                     break;
                 }
             }
 
+            IList<IAppointment> appointments = new List<IAppointment>();
             foreach (var desiredAppointment in potentialAppointments) {
 
                 IAppointmentBuildable wrappedAppointment = new AppointmentWithLocations(bestAvailableRoom, desiredAppointment);
-                appointments.Add(Flatten(wrappedAppointment));
+                appointments.Add(Flatten_PrioritiseTime(wrappedAppointment));
             }
 
             return appointments;
         }
 
-        private bool RoomAvailableForAll(IList<IAppointmentBuildable> appointments, Room room)
+        private bool RoomAvailableForAll(IEnumerable<TimeBlock> timeBlocks, Room room)
         {
             bool available = true;
 
-            foreach (var appointment in appointments)
+            foreach (var timeBlock in timeBlocks)
             {
-                var timeBlock = FlattenTimeBlock(appointment);
 
                 if (RoomAvailable(room, timeBlock))
                 {
