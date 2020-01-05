@@ -12,7 +12,8 @@ namespace AppointmentGeneratorTests
         public void ShouldFindTwoRetrosInJanuary2020()
         {
             //arrange
-            var gen = new RetroGenerator();
+            var gen = new AppointmentGenerator(new Retro());
+            
             DateTime startDate = new DateTime(2020, 1, 1);
             DateTime endDate = new DateTime(2020, 1, 31);
             //act

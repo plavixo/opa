@@ -48,9 +48,9 @@ namespace AppointmentGeneratorTests
 
         public AppointmentSetBigScopeTestsFixture()
         {
-            var demoToProcess = new DemoGenerator().GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
-            var mipToProcess = new MIPGenerator().GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
-            var planningToProcess = new PlanningGenerator().GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
+            var demoToProcess = new AppointmentGenerator(new Demo()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
+            var mipToProcess = new AppointmentGenerator(new MIP()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
+            var planningToProcess = new AppointmentGenerator(new Planning()).GetAppointmentsThatFallWithin(StartDate, EndDate).Single();
             
             IList<IAppointmentBuildable> potentialAppointments = new List<IAppointmentBuildable>() {
                 demoToProcess, mipToProcess, planningToProcess
