@@ -1,5 +1,6 @@
 ﻿using Appointments;
 using FluentAssertions;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,10 +55,19 @@ namespace AppointmentGeneratorTests
             IList<IAppointmentBuildable> potentialAppointments = new List<IAppointmentBuildable>() {
                 demoToProcess, mipToProcess, planningToProcess
             };
-                       
-            IRoomAvailabilityAdaptor roomAvailabilityAdaptor = null;
-            
-            IEnumerable<IAppointment> appointments = new Prioritiser(roomAvailabilityAdaptor).FlattenSet(potentialAppointments);
+
+            Mock<IRoomAvailabilityAdaptor> mockRoomAvailabilityAdaptor = new Mock<IRoomAvailabilityAdaptor>();
+            mockRoomAvailabilityAdaptor.Setup(a => a.RoomIsAvailbleAtTime(It.IsAny<Room>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns(true);
+            mockRoomAvailabilityAdaptor.Setup(a => a.RoomIsAvailbleAtTime(Room.Alpha, mipToProcess.StartTime, mipToProcess.EndTime))
+                .Returns(false);
+
+
+
+            IRoomAvailabilityAdaptor roomAvailabilityAdaptor = mockRoomAvailabilityAdaptor.Object;
+
+            IList<Room> desiredRooms = new List<Room> { Room.Alpha, Room.Bravo};
+            IEnumerable<IAppointment> appointments = new Prioritiser(roomAvailabilityAdaptor).FlattenSet_FixedTimes_SameRoom(potentialAppointments, desiredRooms);
 
             Demo = appointments.Where(a => a.Subject.Equals(TestTypes.DemoTitle)).Single();
             MIP = appointments.Where(a => a.Subject.Equals(TestTypes.MIPTitle)).Single();

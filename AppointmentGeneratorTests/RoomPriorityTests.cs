@@ -26,7 +26,8 @@ namespace AppointmentGeneratorTests
 			DateTime end = new DateTime(2020, 1, 9);
 
 			IList<Room> locations = new List<Room>() { Room.Alpha, Room.Bravo };
-			IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(locations,null);
+			IAppointmentBuildable appointmentWithSubject = new AppointmentWithSubject($"another appointment");
+			IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(locations,appointmentWithSubject);
 			IAppointmentBuildable testAppointment = new AppointmentWithTimes(start, end, appointmentWithLocations);
 
 			//act
@@ -52,7 +53,7 @@ namespace AppointmentGeneratorTests
 			DateTime start	= new DateTime(2020, 1, 1);
 			DateTime end	= new DateTime(2020, 1, 1);
 			IList<Room> desirableLocation = new List<Room>() { Room.Alpha, Room.Bravo };
-			IAppointmentBuildable testAppointment = new AppointmentGenerator(desirableLocation, 1, start)
+			IAppointmentBuildable testAppointment = new AppointmentGenerator(desirableLocation, 1, start, "an appointment")
 				.GetAppointmentsThatFallWithin(start, end)
 				.Single();
 

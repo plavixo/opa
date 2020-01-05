@@ -9,6 +9,7 @@ namespace Appointments
         IEnumerable<Room> Locations { get; }
         DateTime StartTime { get; }
         DateTime EndTime { get; }
+        string Subject { get; }
     }
 
     public class AppointmentWithTimes : IAppointmentBuildable
@@ -18,6 +19,7 @@ namespace Appointments
         public DateTime EndTime { get; }
         public IEnumerable<Room> Locations { get; }
 
+        public string Subject { get; }
 
         public AppointmentWithTimes(DateTime startTime, DateTime endTime, IAppointmentBuildable innerAppointment)
 
@@ -38,6 +40,8 @@ namespace Appointments
 
         public DateTime EndTime { get; } = DateTime.MinValue;
 
+        public string Subject { get; }
+
         public AppointmentWithLocations(Room room, IAppointmentBuildable innerAppointment)
         {
             Locations = new List<Room> { room };
@@ -51,7 +55,22 @@ namespace Appointments
         }
     }
 
-   
+    public class AppointmentWithSubject : IAppointmentBuildable
+    {
+        public IAppointmentBuildable InnerAppointment { get; }
+        public IEnumerable<Room> Locations { get; }
 
-    
+        public DateTime StartTime { get; } = DateTime.MinValue;
+
+        public DateTime EndTime { get; } = DateTime.MinValue;
+
+        public string Subject { get; }
+
+        public AppointmentWithSubject(string subject)
+        {
+            Subject = subject;
+        }
+    }
+
+
 }

@@ -12,14 +12,16 @@ namespace Appointments
         private IList<Room> _desirableLocations;
         private int _interval;
         private TimeSpan _duration;
+        private string _subject;
 
-        public AppointmentGenerator(IList<Room> desirableLocations, int interval, DateTime rootDate)
+        public AppointmentGenerator(IList<Room> desirableLocations, int interval, DateTime rootDate, string subject)
         {
 
             _desirableLocations = desirableLocations;
             _interval = interval;
             _rootDate = rootDate;
             _duration = new TimeSpan(1, 0, 0);
+            _subject = subject;
 
 
             _potentialDates = GeneratePotentialDates();
@@ -52,7 +54,8 @@ namespace Appointments
             IEnumerable<DateTime> times = validForStart.Where(appointmentDate => appointmentDate <= inclusiveEndOfRange);
 
             foreach (var startTime in times) {
-                IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(_desirableLocations, null);
+                IAppointmentBuildable appointmentWithSubject = new AppointmentWithSubject(_subject);
+                IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(_desirableLocations, appointmentWithSubject);
                 appointments.Add(
                     new AppointmentWithTimes(startTime, startTime.Add(_duration), appointmentWithLocations)    
                 );
@@ -62,4 +65,6 @@ namespace Appointments
         }
 
     }
+
+    
 }
