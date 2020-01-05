@@ -64,6 +64,7 @@ namespace AppointmentGeneratorTests
 			flattenedAppointment.Location.Should().Be(Room.Bravo);
 		}
 
+		[Fact]
 		public void ShouldFallBackToLastRoom()
 		{
 			//arrange
@@ -82,8 +83,8 @@ namespace AppointmentGeneratorTests
 
 			DateTime start = new DateTime(2020, 1, 1);
 			DateTime end = new DateTime(2020, 1, 1);
-			IList<Room> desirableLocation = new List<Room>() { Room.Alpha, Room.Bravo };
-			IAppointmentBuildable testAppointment = new AppointmentGenerator(desirableLocation, 1, start, "an appointment")
+			IList<Room> desirableLocations = new List<Room>() { Room.Alpha, Room.Bravo, Room.Charlie};
+			IAppointmentBuildable testAppointment = new AppointmentGenerator(desirableLocations, 1, start, "an appointment")
 				.GetAppointmentsThatFallWithin(start, end)
 				.Single();
 

@@ -6,17 +6,22 @@ namespace Appointments
 {
     public class RetroGenerator : IAppointmentGenerator
     {
-        private readonly string _subject = "Retro";
-        IList<Room>_desirableLocations = new List<Room>() { Room.Alpha, Room.Bravo};
-        int _interval = 14;
-        DateTime _rootDate = new DateTime(2020, 1, 9, 14, 00, 00);
+        IRecurringAppointment retro = new RecurringAppointment(
+            subject : "Retro",
+            desirableLocations : new List<Room>() { Room.Alpha, Room.Bravo},
+            intervalDays : 14,
+            rootTimeBlock : new TimeBlock(
+                startTime: new DateTime(2020, 1, 9, 14, 00, 00),
+                endTime: new DateTime(2020, 1, 9, 15, 00,00)
+            )           
+        );
     
         public IList<IAppointmentBuildable> GetAppointmentsThatFallWithin(DateTime startDate, DateTime endDate)
         {
-
-            IAppointmentGenerator appointmentGenerator = new AppointmentGenerator(_desirableLocations, _interval, _rootDate, _subject);
+            IAppointmentGenerator appointmentGenerator = new AppointmentGenerator(retro);
             
             var appointmentsThatFallWithin = appointmentGenerator.GetAppointmentsThatFallWithin(startDate, endDate);
+            
             return appointmentsThatFallWithin;
         }
     }

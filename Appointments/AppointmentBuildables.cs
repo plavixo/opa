@@ -14,6 +14,8 @@ namespace Appointments
 
     public class AppointmentWithTimes : IAppointmentBuildable
     {
+        private IAppointmentBuildable appointmentWithLocations;
+
         public IAppointmentBuildable InnerAppointment { get; }
         public DateTime StartTime { get; }
         public DateTime EndTime { get; }
@@ -28,7 +30,14 @@ namespace Appointments
             EndTime = endTime;
             InnerAppointment = innerAppointment;
         }
-     }
+
+        public AppointmentWithTimes(TimeBlock timeBlock, IAppointmentBuildable innerAppointment)
+        {
+            StartTime = timeBlock.StartTime;
+            EndTime = timeBlock.EndTime;
+            InnerAppointment = innerAppointment;
+        }
+    }
 
 
     public class AppointmentWithLocations : IAppointmentBuildable
@@ -48,7 +57,7 @@ namespace Appointments
             InnerAppointment = innerAppointment;
         }
 
-        public AppointmentWithLocations(IList<Room> desirableLocations, IAppointmentBuildable innerAppointment)
+        public AppointmentWithLocations(IEnumerable<Room> desirableLocations, IAppointmentBuildable innerAppointment)
         {
             Locations = desirableLocations;
             InnerAppointment = innerAppointment;

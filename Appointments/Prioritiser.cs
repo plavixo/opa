@@ -17,6 +17,8 @@ namespace Appointments
             Room room = GetRoomFor_WithRespectToTimes(appointment);
             DateTime startTime = GetStartTime(appointment);
 
+            
+
             string subject = GetSubject(appointment);
             IAppointment flattenedAppointment = new Appointment(startTime, room, subject);
 
