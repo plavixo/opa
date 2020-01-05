@@ -12,50 +12,12 @@ namespace Appointments
         public Prioritiser(IRoomAvailabilityAdaptor roomAvailabilityAdaptor) {
             _adaptor = roomAvailabilityAdaptor;
         }
-
-        public IAppointment Flatten_PrioritiseTime(IAppointmentBuildable appointment)
-        {
-            TimeBlock timeBlock = FlattenTimeBlock(appointment);
-            var desiredRooms = FlattenDesiredRooms(appointment);
-       
-            Room room = GetBestRoomFor(timeBlock, desiredRooms);
-           
-            string subject = FlattenSubject(appointment);
-
-            IAppointment flattenedAppointment = new Appointment(timeBlock.StartTime, room, subject);
-
-            return flattenedAppointment;
-        }
-
-        private Room GetBestRoomFor(TimeBlock timeBlock, IEnumerable<Room> desiredRooms)
-        {
-            Room room = Room.NotSet;
-
-            foreach (var desiredRoom in desiredRooms)
-            {
-                if (RoomAvailable(desiredRoom, timeBlock))
-                {
-                    room = desiredRoom;
-                    break;
-                }
-            }
-
-            return room;
-        }
-       
-
         public IEnumerable<IAppointment> FlattenSet_FixedTimes_SameRoom(IList<IAppointmentBuildable> potentialAppointments, IEnumerable<Room> desiredRooms)
         {
             IEnumerable<TimeBlock> timeBlocks = potentialAppointments.Select(t => FlattenTimeBlock(t));
 
-            Room bestAvailableRoom = Room.NotSet;
-            foreach (var room in desiredRooms) {
-                if (RoomAvailableForAll(timeBlocks, room)) {
-                    bestAvailableRoom = room;
-                    break;
-                }
-            }
-
+            Room bestAvailableRoom = GetBestRoomFor(timeBlocks, desiredRooms);
+            
             IList<IAppointment> appointments = new List<IAppointment>();
             foreach (var desiredAppointment in potentialAppointments) {
 
@@ -66,7 +28,41 @@ namespace Appointments
             return appointments;
         }
 
-        private bool RoomAvailableForAll(IEnumerable<TimeBlock> timeBlocks, Room room)
+        public IAppointment Flatten_PrioritiseTime(IAppointmentBuildable appointment)
+        {
+            TimeBlock timeBlock = FlattenTimeBlock(appointment);
+            var desiredRooms = FlattenDesiredRooms(appointment);
+
+            Room room = GetBestRoomFor(timeBlock, desiredRooms);
+
+            string subject = FlattenSubject(appointment);
+
+            IAppointment flattenedAppointment = new Appointment(timeBlock.StartTime, room, subject);
+
+            return flattenedAppointment;
+        }
+
+        private Room GetBestRoomFor(TimeBlock timeBlock, IEnumerable<Room> desiredRooms)
+        {
+            return GetBestRoomFor(new List<TimeBlock> { timeBlock }, desiredRooms);
+        }
+
+        private Room GetBestRoomFor(IEnumerable<TimeBlock> timeBlocks, IEnumerable<Room> desiredRooms)
+        {
+            Room bestAvailableRoom = Room.NotSet;
+          
+            foreach (var room in desiredRooms)
+            {
+                if (RoomAvailableForAll(room,timeBlocks))
+                {
+                    bestAvailableRoom = room;
+                    break;
+                }
+            }
+            return bestAvailableRoom;
+        }
+
+        private bool RoomAvailableForAll(Room room, IEnumerable<TimeBlock> timeBlocks)
         {
             bool available = true;
 
@@ -86,9 +82,7 @@ namespace Appointments
             return available;
 
         }
-
-
-
+               
         private bool RoomAvailable(Room desiredRoom, TimeBlock timeBlock)
         {
             return _adaptor.RoomIsAvailbleAtTime(desiredRoom, timeBlock.StartTime, timeBlock.EndTime);
