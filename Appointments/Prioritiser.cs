@@ -15,12 +15,10 @@ namespace Appointments
         public IAppointment Flatten(IAppointmentBuildable appointment)
         {
             Room room = GetRoomFor_WithRespectToTimes(appointment);
-            DateTime startTime = GetStartTime(appointment);
-
+            TimeBlock timeBlock = GetTimeBlock(appointment);
             
-
             string subject = GetSubject(appointment);
-            IAppointment flattenedAppointment = new Appointment(startTime, room, subject);
+            IAppointment flattenedAppointment = new Appointment(timeBlock.StartTime, room, subject);
 
             return flattenedAppointment;
         }
@@ -40,24 +38,19 @@ namespace Appointments
             return subject;
         }
 
-        public object Flatten(object testAppointment)
+        private TimeBlock GetTimeBlock(IAppointmentBuildable appointment)
         {
-            throw new NotImplementedException();
-        }
+            TimeBlock timeBlock  = appointment.TimeBlock;
 
-        private DateTime GetStartTime(IAppointmentBuildable appointment)
-        {
-            DateTime startTime  = appointment.StartTime;
-
-            while (startTime.Equals(DateTime.MinValue) && appointment.InnerAppointment != null)
+            while (timeBlock == null && appointment.InnerAppointment != null)
             {
                 appointment = appointment.InnerAppointment;
-                startTime = appointment.StartTime;
+                timeBlock = appointment.TimeBlock;
             }
 
-            if (startTime == DateTime.MinValue) throw new Exception($"Starttime has not been set");
+            if (timeBlock == null) throw new Exception($"TimeBlock has not been set");
 
-            return startTime;
+            return timeBlock;
         }
 
         private bool RoomAvailableForAll(IList<IAppointmentBuildable> appointments, Room room)
@@ -66,9 +59,9 @@ namespace Appointments
 
             foreach (var appointment in appointments)
             {
-                var startTime = GetStartTime(appointment);
-                var duration = GetDuration(appointment);
-                var endTime = startTime.Add(duration);
+                var timeBlock = GetTimeBlock(appointment);
+                var startTime = timeBlock.StartTime;
+                var endTime = timeBlock.EndTime;
 
                 if (RoomAvailable(room, startTime, endTime))
                 {
@@ -84,30 +77,19 @@ namespace Appointments
 
         }
 
-        public IEnumerable<IAppointment> FlattenSet_FixedTimes_SameRoom(IList<IAppointmentBuildable> potentialAppointments, object desiredRooms)
-        {
-            throw new NotImplementedException();
-        }
 
-        private TimeSpan GetDuration(IAppointmentBuildable appointment)
-        {
-            return new TimeSpan(1, 0, 0);
-        }
-
+        
         private Room GetRoomFor_WithRespectToTimes(IAppointmentBuildable appointment)
         {
             Room room = Room.NotSet;
+            
+            var loopAppointment = appointment;
+            IEnumerable<Room> desiredRooms = GetDesiredRooms(appointment);
 
-            IEnumerable<Room> desiredRooms = appointment.Locations;
-
-            while (desiredRooms.IsNullOrEmpty() && appointment.InnerAppointment!=null) {
-
-                appointment = appointment.InnerAppointment;
-                desiredRooms = appointment.Locations;            
-            }
+            TimeBlock timeBlock = GetTimeBlock(appointment);
 
             foreach (var desiredRoom in desiredRooms) {             
-                if (RoomAvailable(desiredRoom, appointment.StartTime, appointment.EndTime))
+                if (RoomAvailable(desiredRoom, timeBlock.StartTime, timeBlock.EndTime))
                 {
                     room = desiredRoom;
                     break;
@@ -115,6 +97,22 @@ namespace Appointments
             }
 
             return room;
+        }
+
+        private IEnumerable<Room> GetDesiredRooms(IAppointmentBuildable appointment)
+        {
+            IEnumerable<Room> desiredRooms = appointment.Locations;
+
+            while (desiredRooms.IsNullOrEmpty() && appointment.InnerAppointment != null)
+            {
+
+                appointment = appointment.InnerAppointment;
+                desiredRooms = appointment.Locations;
+            }
+
+            if (desiredRooms.IsNullOrEmpty()) { throw new Exception($"Desired Rooms not set"); }
+
+            return desiredRooms;
         }
 
         public IEnumerable<IAppointment> FlattenSet_FixedTimes_SameRoom(IList<IAppointmentBuildable> potentialAppointments, IEnumerable<Room> desiredRooms)
@@ -125,6 +123,7 @@ namespace Appointments
             foreach (var room in desiredRooms) {
                 if (RoomAvailableForAll(potentialAppointments, room)) {
                     bestAvailableRoom = room;
+                    break;
                 }
             }
 
@@ -132,7 +131,7 @@ namespace Appointments
                 string subject = GetSubject(desiredAppointment);
                 appointments.Add(
                     new Appointment(
-                        desiredAppointment.StartTime, bestAvailableRoom, subject
+                        desiredAppointment.TimeBlock.StartTime, bestAvailableRoom, subject
                     )
                 );
             }

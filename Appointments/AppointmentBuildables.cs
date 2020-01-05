@@ -7,34 +7,30 @@ namespace Appointments
     {
         IAppointmentBuildable InnerAppointment { get; }
         IEnumerable<Room> Locations { get; }
-        DateTime StartTime { get; }
-        DateTime EndTime { get; }
         string Subject { get; }
+        TimeBlock TimeBlock { get; }
     }
 
     public class AppointmentWithTimes : IAppointmentBuildable
     {
-        private IAppointmentBuildable appointmentWithLocations;
 
         public IAppointmentBuildable InnerAppointment { get; }
-        public DateTime StartTime { get; }
-        public DateTime EndTime { get; }
         public IEnumerable<Room> Locations { get; }
 
         public string Subject { get; }
 
+        public TimeBlock TimeBlock { get; }
+
         public AppointmentWithTimes(DateTime startTime, DateTime endTime, IAppointmentBuildable innerAppointment)
 
         {
-            StartTime = startTime;
-            EndTime = endTime;
+            TimeBlock = new TimeBlock(startTime, endTime);
             InnerAppointment = innerAppointment;
         }
 
         public AppointmentWithTimes(TimeBlock timeBlock, IAppointmentBuildable innerAppointment)
         {
-            StartTime = timeBlock.StartTime;
-            EndTime = timeBlock.EndTime;
+            TimeBlock = timeBlock;
             InnerAppointment = innerAppointment;
         }
     }
@@ -44,12 +40,9 @@ namespace Appointments
     {
         public IAppointmentBuildable InnerAppointment { get; }
         public IEnumerable<Room> Locations { get; }
-
-        public DateTime StartTime { get; } = DateTime.MinValue;
-
-        public DateTime EndTime { get; } = DateTime.MinValue;
-
         public string Subject { get; }
+
+        public TimeBlock TimeBlock {get;}
 
         public AppointmentWithLocations(Room room, IAppointmentBuildable innerAppointment)
         {
@@ -69,15 +62,14 @@ namespace Appointments
         public IAppointmentBuildable InnerAppointment { get; }
         public IEnumerable<Room> Locations { get; }
 
-        public DateTime StartTime { get; } = DateTime.MinValue;
-
-        public DateTime EndTime { get; } = DateTime.MinValue;
-
         public string Subject { get; }
 
-        public AppointmentWithSubject(string subject)
+        public TimeBlock TimeBlock { get; }
+
+        public AppointmentWithSubject(string subject, IAppointmentBuildable innerAppointment)
         {
             Subject = subject;
+            InnerAppointment = innerAppointment;
         }
     }
 

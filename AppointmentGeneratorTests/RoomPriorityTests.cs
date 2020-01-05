@@ -26,7 +26,7 @@ namespace AppointmentGeneratorTests
 			DateTime end = new DateTime(2020, 1, 9);
 
 			IList<Room> locations = new List<Room>() { Room.Alpha, Room.Bravo };
-			IAppointmentBuildable appointmentWithSubject = new AppointmentWithSubject($"another appointment");
+			IAppointmentBuildable appointmentWithSubject = new AppointmentWithSubject($"another appointment",null);
 			IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(locations,appointmentWithSubject);
 			IAppointmentBuildable testAppointment = new AppointmentWithTimes(start, end, appointmentWithLocations);
 

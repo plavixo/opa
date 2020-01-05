@@ -57,10 +57,23 @@ namespace AppointmentGeneratorTests
             };
 
             Mock<IRoomAvailabilityAdaptor> mockRoomAvailabilityAdaptor = new Mock<IRoomAvailabilityAdaptor>();
-            mockRoomAvailabilityAdaptor.Setup(a => a.RoomIsAvailbleAtTime(It.IsAny<Room>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
-                .Returns(true);
-            mockRoomAvailabilityAdaptor.Setup(a => a.RoomIsAvailbleAtTime(Room.Alpha, mipToProcess.StartTime, mipToProcess.EndTime))
-                .Returns(false);
+            mockRoomAvailabilityAdaptor
+                .Setup(a => a.RoomIsAvailbleAtTime(It.IsAny<Room>(), It.IsAny<DateTime>(), It.IsAny<DateTime>()))
+                .Returns((Room room, DateTime start, DateTime end)=> thing(room, start, end));
+
+            bool thing(Room room, DateTime start, DateTime end)
+            {
+                if(room.Equals(Room.Alpha) && start.Equals(mipToProcess.TimeBlock.StartTime) && end.Equals(mipToProcess.TimeBlock.EndTime)){
+                    return false;
+                }else {
+                    return true;
+                }
+            }
+
+            //mockRoomAvailabilityAdaptor
+            //    .Setup(a => a.RoomIsAvailbleAtTime(Room.Alpha, mipToProcess.StartTime, mipToProcess.EndTime))
+            //    .Returns(false);
+            //mockRoomAvailabilityAdaptor.SetReturnsDefault<bool>(true);
 
 
 
@@ -73,5 +86,7 @@ namespace AppointmentGeneratorTests
             MIP = appointments.Where(a => a.Subject.Equals(TestTypes.MIPTitle)).Single();
             Planning = appointments.Where(a => a.Subject.Equals(TestTypes.PlanningTitle)).Single();
         }
+
+       
     }
 }

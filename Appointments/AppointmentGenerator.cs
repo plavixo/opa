@@ -56,7 +56,7 @@ namespace Appointments
 
             foreach (var block in timeBlocks)
             {
-                IAppointmentBuildable appointmentWithSubject = new AppointmentWithSubject(_subject);
+                IAppointmentBuildable appointmentWithSubject = new AppointmentWithSubject(_subject, null);
                 IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(_desirableLocations, appointmentWithSubject);
 
                 var timeBlock = new TimeBlock(block.StartTime, block.EndTime);
