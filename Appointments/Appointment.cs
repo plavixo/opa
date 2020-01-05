@@ -6,16 +6,20 @@ namespace Appointments
 {
     public interface IAppointment
     {
-        public Room Location { get; }
+        Room Location { get; }
+        DateTime StartTime { get; }
     }
 
     public class Appointment : IAppointment
     {
         public Room Location { get; }
 
-        public Appointment(Room room)
+        public DateTime StartTime { get; }
+
+        public Appointment(DateTime startTime, Room room)
         {
             Location = room;
+            StartTime = startTime;
         }
 
     }
