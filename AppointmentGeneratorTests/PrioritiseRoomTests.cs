@@ -8,7 +8,7 @@ using Xunit;
 
 namespace AppointmentGeneratorTests
 {
-	public class RoomPriorityTests
+	public class PrioritiseRoomTests
 	{
 		[Fact]
 		public void ShouldPreferFirstRoomInList()

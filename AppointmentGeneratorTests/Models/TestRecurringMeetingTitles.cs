@@ -1,6 +1,6 @@
 ﻿namespace AppointmentGeneratorTests
 {
-    internal class TestTypes
+    internal class TestRecurringMeetingTitles
     {
         public static string RetroTitle { get; } = "Retro";
         public static string MIPTitle { get; } = "MIP";

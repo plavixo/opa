@@ -67,9 +67,9 @@ namespace AppointmentGeneratorTests
             IEnumerable<IAppointment> appointments = new AppointmentAspectResolver(roomAvailabilityAdaptor).FlattenSet_SameRoom_PrioritiseTime(setOfAppointments, desiredRoomsForSet);
 
             //Unpack for tests
-            Demo = appointments.Where(a => a.Subject.Equals(TestTypes.DemoTitle)).Single();
-            MIP = appointments.Where(a => a.Subject.Equals(TestTypes.MIPTitle)).Single();
-            Planning = appointments.Where(a => a.Subject.Equals(TestTypes.PlanningTitle)).Single();
+            Demo = appointments.Where(a => a.Subject.Equals(TestRecurringMeetingTitles.DemoTitle)).Single();
+            MIP = appointments.Where(a => a.Subject.Equals(TestRecurringMeetingTitles.MIPTitle)).Single();
+            Planning = appointments.Where(a => a.Subject.Equals(TestRecurringMeetingTitles.PlanningTitle)).Single();
         }
 
         private static IRoomAvailabilityAdaptor GetAvailablilityAdaptorThatWillShowRoomBusyAtAppointmentTime(IAppointmentAspect appointment)
