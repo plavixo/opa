@@ -8,7 +8,7 @@ namespace AppointmentGeneratorTests
 	public class PrioritiserTests
 	{
 		[Fact]
-		public void ShouldPrioritiseOnRooms() {
+		public void ShouldResolveRooms() {
 			//arrange
 			DateTime startingTime = DateTime.Now;
 			IAppointmentBuildable appointmentWithTime = new AppointmentWithTimes(startingTime, null);
@@ -25,7 +25,7 @@ namespace AppointmentGeneratorTests
 
 		[Fact]
 		public void ShouldGetNestedRoom() {
-						//arrange
+			//arrange
 			DateTime startingTime = DateTime.Now;
 			IAppointmentBuildable appointmentWithLocation = new AppointmentWithLocation(Room.Alpha, null);
 			IAppointmentBuildable appointmentWithTime = new AppointmentWithTimes(startingTime, appointmentWithLocation);

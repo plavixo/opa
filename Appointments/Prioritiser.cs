@@ -21,6 +21,11 @@ namespace Appointments
 
             Room desiredRoom = appointment.Location;
 
+            while (desiredRoom.Equals(Room.NotSet) && !appointment.InnerAppointment.Equals(null)) { 
+            
+                desiredRoom = appointment.InnerAppointment.Location;            
+            }
+
             if (RoomAvailable(desiredRoom))
             {
                 room = desiredRoom;
