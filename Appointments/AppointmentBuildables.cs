@@ -11,14 +11,18 @@ namespace Appointments
         TimeBlock TimeBlock { get; }
     }
 
-    public class AppointmentWithTimes : IAppointmentBuildable
+    public abstract class AppointmentBuildableBase: IAppointmentBuildable { 
+        public abstract IAppointmentBuildable InnerAppointment { get; }
+        public virtual IEnumerable<Room> Locations { get; }
+        public virtual string Subject { get; }
+        public virtual TimeBlock TimeBlock { get; }
+    }
+
+    public class AppointmentWithTimes :AppointmentBuildableBase
     {
 
-        public IAppointmentBuildable InnerAppointment { get; }
-        public IEnumerable<Room> Locations { get; }
-        public string Subject { get; }
-
-        public TimeBlock TimeBlock { get; }
+        public override IAppointmentBuildable InnerAppointment { get; }
+        public override TimeBlock TimeBlock { get; }
 
         public AppointmentWithTimes(DateTime startTime, DateTime endTime, IAppointmentBuildable innerAppointment)
 
@@ -35,12 +39,11 @@ namespace Appointments
     }
 
 
-    public class AppointmentWithLocations : IAppointmentBuildable
+    public class AppointmentWithLocations : AppointmentBuildableBase
     {
-        public IAppointmentBuildable InnerAppointment { get; }
-        public IEnumerable<Room> Locations { get; }
-        public string Subject { get; }
-        public TimeBlock TimeBlock {get;}
+        public override IAppointmentBuildable InnerAppointment { get; }
+        public override IEnumerable<Room> Locations { get; }
+
 
         public AppointmentWithLocations(Room room, IAppointmentBuildable innerAppointment)
         {
@@ -55,12 +58,10 @@ namespace Appointments
         }
     }
 
-    public class AppointmentWithSubject : IAppointmentBuildable
+    public class AppointmentWithSubject : AppointmentBuildableBase
     {
-        public IAppointmentBuildable InnerAppointment { get; }
-        public IEnumerable<Room> Locations { get; }
-        public string Subject { get; }
-        public TimeBlock TimeBlock { get; }
+        public override IAppointmentBuildable InnerAppointment { get; }
+        public override string Subject { get; }
 
         public AppointmentWithSubject(string subject, IAppointmentBuildable innerAppointment)
         {
