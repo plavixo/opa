@@ -16,7 +16,6 @@ namespace Appointments
 
         public IAppointmentBuildable InnerAppointment { get; }
         public IEnumerable<Room> Locations { get; }
-
         public string Subject { get; }
 
         public TimeBlock TimeBlock { get; }
@@ -41,7 +40,6 @@ namespace Appointments
         public IAppointmentBuildable InnerAppointment { get; }
         public IEnumerable<Room> Locations { get; }
         public string Subject { get; }
-
         public TimeBlock TimeBlock {get;}
 
         public AppointmentWithLocations(Room room, IAppointmentBuildable innerAppointment)
@@ -61,9 +59,7 @@ namespace Appointments
     {
         public IAppointmentBuildable InnerAppointment { get; }
         public IEnumerable<Room> Locations { get; }
-
         public string Subject { get; }
-
         public TimeBlock TimeBlock { get; }
 
         public AppointmentWithSubject(string subject, IAppointmentBuildable innerAppointment)
