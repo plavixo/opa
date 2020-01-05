@@ -4,5 +4,6 @@
     {
         NotSet,
         Alpha,
+        Bravo,
     }
 }

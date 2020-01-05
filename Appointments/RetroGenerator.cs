@@ -7,10 +7,12 @@ namespace Appointments
     public class RetroGenerator
     {
         private IList<DateTime> _potentialDates;
+        private IList<Room> _desirableLocations;
 
         public RetroGenerator()
         {
-            _potentialDates = GeneratePotentialDates();     
+            _potentialDates = GeneratePotentialDates();
+            _desirableLocations = new List<Room>() { Room.Alpha, Room.Bravo };
         }
 
         private IList<DateTime> GeneratePotentialDates()
@@ -34,12 +36,14 @@ namespace Appointments
 
             IList<IAppointmentBuildable> retros = new List<IAppointmentBuildable>();
 
-            
-            IEnumerable<DateTime> times = _potentialDates.Where(date => date > startRange && date < endDate);
+
+            DateTime inclusiveEndDate = endDate.AddDays(1);
+            IEnumerable<DateTime> times = _potentialDates.Where(date => date > startRange && date <= inclusiveEndDate);
 
             foreach (var startTime in times) {
+                IAppointmentBuildable appointmentWithLocations = new AppointmentWithLocations(_desirableLocations, null);
                 retros.Add(
-                    new AppointmentWithTimes(startTime, startTime.AddHours(1), null)    
+                    new AppointmentWithTimes(startTime, startTime.AddHours(1), appointmentWithLocations)    
                 );
             }
 

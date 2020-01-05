@@ -22,7 +22,7 @@ namespace Appointments
         public AppointmentWithTimes(DateTime startTime, DateTime endTime, IAppointmentBuildable innerAppointment)
 
         {
-            this.StartTime = startTime;
+            StartTime = startTime;
             EndTime = endTime;
             InnerAppointment = innerAppointment;
         }
@@ -41,6 +41,12 @@ namespace Appointments
         public AppointmentWithLocations(Room room, IAppointmentBuildable innerAppointment)
         {
             Locations = new List<Room> { room };
+            InnerAppointment = innerAppointment;
+        }
+
+        public AppointmentWithLocations(IList<Room> desirableLocations, IAppointmentBuildable innerAppointment)
+        {
+            Locations = desirableLocations;
             InnerAppointment = innerAppointment;
         }
     }
